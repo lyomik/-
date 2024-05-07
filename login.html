@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>臨床透析預測與決策輔助系統</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #79ccfc;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            color: white;
+            font-size: 36px;
+        }
+
+        .login-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            width: 500px; /* 增加寬度 */
+            text-align: center;
+            border: 10px solid #57574e; /* 設置邊框樣式，寬度和顏色 */
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007BFF;
+        }
+
+        .welcome-text { /* 歡迎字樣的顏色 */
+            color: #2f2f2f;
+        }
+
+        input {
+            width: 90%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 10px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+            margin-right: 5px;
+        }
+
+        input:focus {
+            border-color: #007BFF;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            margin-bottom: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007BFF;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .register-link {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>臨床透析預測與決策輔助系統</h1>
+    </header>
+    <div class="login-container">
+        <h2><span class="welcome-text">歡迎</span></h2>
+        <form method="POST">
+            <input type="text" name="userid" id="userid" placeholder="帳號" required>
+            <input type="password" name="password" id="password" placeholder="密碼" required>
+            <button type="submit">登入</button>
+        </form>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <p class="register-link">還沒有帳號？<a href="{{ url_for('regist') }}">註冊</a></p>
+
+    </div>
+</body>
+</html>

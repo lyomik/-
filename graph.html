@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>資料視覺化</title>
+    <!-- 引入 Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h2>繪製圖表</h2>
+    <form id="inputForm">
+        <label for="columnName">輸入欄位名稱：</label>
+        <input type="text" id="columnName" name="columnName">
+        <label for="chartType">選擇圖表類型：</label>
+        <select id="chartType" name="chartType">
+            <option value="pie">圓餅圖</option>
+            <option value="line">折線圖</option>
+        </select>
+        <button type="submit">查看統計結果</button>
+    </form>
+    <div id="chartContainer" style="width: 800px; height: 400px;">
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <script>
+        document.getElementById('inputForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const columnName = document.getElementById('columnName').value;
+            const chartType = document.getElementById('chartType').value;
+            fetch(`/get_data_from_database?columnName=${columnName}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const values = data.values;
+                        const zeroCount = values.filter(value => value === 0).length;
+                        const oneCount = values.filter(value => value === 1).length;
+
+                        const ctx = document.getElementById('myChart').getContext('2d');
+                        const myChart = new Chart(ctx, {
+                            type: chartType, // 使用使用者選擇的圖表類型
+                            data: {
+                                labels: ['0', '1'],
+                                datasets: [{
+                                    label: columnName,
+                                    data: [zeroCount, oneCount],
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.2)',
+                                        'rgba(54, 162, 235, 0.2)',
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    } else {
+                        alert(data.message); // 提示用戶輸入的欄位名稱不存在或輸入有誤
+                    }
+                });
+        });
+    </script>
+</body>
+</html>

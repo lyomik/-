@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decision Tree Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .node circle {
+            fill: #fff;
+            stroke: steelblue;
+            stroke-width: 3px;
+        }
+
+        .node text {
+            font: 12px sans-serif;
+        }
+
+        .link {
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Decision Tree Visualization</h1>
+
+    <div id="tree-container"></div>
+
+    <script>
+        // Load decision tree data
+        var treeData = {{ json_tree | safe }};
+
+        // Set up D3.js tree layout
+        var margin = { top: 40, right: 120, bottom: 20, left: 120 },
+            width = 960 - margin.right - margin.left,
+            height = 500 - margin.top - margin.bottom;
+
+        var svg = d3.select("#tree-container").append("svg")
+            .attr("width", width + margin.right + margin.left)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform",
+                "translate(" + margin.left + "," + margin.top + ")");
+
+        var root = d3.hierarchy(treeData);
+        var treeLayout = d3.tree().size([width, height]); // Adjust size for vertical layout
+        treeLayout(root);
+
+        // Add links
+        svg.selectAll('.link')
+            .data(root.links())
+            .enter()
+            .append('path')
+            .attr('class', 'link')
+            .attr('d', d3.linkVertical() // Use vertical link generator
+                .x(d => d.x)
+                .y(d => d.y));
+
+        // Add nodes
+        var nodes = svg.selectAll('.node')
+            .data(root.descendants())
+            .enter()
+            .append('g')
+            .attr('class', d => 'node' + (d.children ? ' node--internal' : ' node--leaf'))
+            .attr('transform', d => 'translate(' + d.x + ',' + d.y + ')'); // Swap x and y positions
+
+        nodes.append('circle')
+            .attr('r', 10);
+
+        nodes.append('text')
+            .attr('dy', '.35em')
+            .attr('y', d => d.children ? -13 : 13) // Adjust text position for vertical layout
+            .style('text-anchor', 'middle')
+            .text(d => d.data.name);
+    </script>
+</body>
+</html>

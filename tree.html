@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Decision Tree Visualization</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    .node circle {
+      fill: #cc520c;
+      stroke: rgb(235, 137, 9);
+      stroke-width: 2px;
+    }
+    .node text {
+      filter: drop-shadow(0 0 10px rgb(241, 3, 3)); /* 添加发光效果 */
+    }
+
+    .node text {
+      font: 12px sans-serif;
+      pointer-events: none;
+    }
+
+    .node circle:hover {
+      transform: scale(1.5); /* 放大1.5倍 */
+    }
+
+
+    .link {
+      fill: none;
+      stroke: #ac5b19;
+      stroke-width: 1.5px;
+    }
+
+    .node text {
+      font: 12px sans-serif;
+      pointer-events: none;
+      white-space: nowrap; /* 不换行 */
+    }
+
+  </style>
+</head>
+<body>
+
+<div>
+  <label for="treeData">Enter Tree Data (JSON):</label><br>
+  <textarea id="treeData" rows="10" cols="50"></textarea><br>
+  <button onclick="generateTree()">Generate Tree</button>
+</div>
+
+<svg id="tree-container"></svg>
+<svg id="tree-container1" width="800" height="400"></svg>
+
+<script>
+  function generateTree() {
+    var inputData = document.getElementById("treeData").value;
+    var treeData = JSON.parse(inputData);
+
+    var width = 2000;
+    var height = 700;
+
+    var treemap = d3.tree().size([width, height]);
+
+    var svg = d3.select("#tree-container")
+      .attr("width", width)
+      .attr("height", height)
+      .append("g")
+      .attr("transform", "translate(20, 20)");
+
+    var root = d3.hierarchy(treeData);
+    var tree = treemap(root);
+
+    svg.selectAll("*").remove();
+
+    svg.selectAll(".link")
+      .data(tree.links())
+      .enter().append("path")
+      .attr("class", "link")
+      .attr("d", d3.linkVertical()
+        .x(function(d) { return d.x; })
+        .y(function(d) { return d.y; }));
+
+    var nodes = svg.selectAll(".node")
+      .data(tree.descendants())
+      .enter().append("g")
+      .attr("class", "node")
+      .attr("transform", function(d) {
+        return "translate(" + d.x + "," + d.y + ")";
+      });
+
+    nodes.append("circle")
+      .attr("r", 5)
+      .attr("class", "node-circle"); // 添加一個類名以便選擇
+
+
+    nodes.append("text")
+      .attr("dy", ".35em")
+      .attr("x", function(d) { return d.children ? -13 : 13; })
+      .attr("text-anchor", function(d) { return d.children ? "end" : "start"; }) // Changed "style" to "attr"
+      .text(function(d) { 
+          var name = d.data.name;
+          // 在需要换行的位置插入换行符
+          name = name.replace(/\(/g, "\n(");
+          return name;
+      });
+    nodes.on("mouseover", function(d) {
+      d3.select(this).select("text").classed("hover", true);
+    })
+    .on("mouseout", function(d) {
+      d3.select(this).select("text").classed("hover", false);
+    });
+  }
+</script>
+
+</body>
+</html>

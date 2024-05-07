@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>病患資料輸入</title>
+</head>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f5f5f5;
+}
+
+.container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+input {
+    width: 94%;
+    padding: 3%;
+    margin-bottom: 6%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+button {
+    width: 100%;
+    padding: 4%;
+    border: none;
+    border-radius: 5px;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+    margin-bottom: 3%;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+</style>
+<body>
+    <div class="container">
+        <h2>病患資料輸入</h2>
+        <form method="POST" name="patientDataForm" action="/save_patient_data">
+            <input type="number" name="year" id="year" placeholder="年度" required>
+            <input type="text" name="patient_id" id="patient_id" placeholder="病歷號" required>
+            <select name="gender" id="gender" required>
+                <option value="" disabled selected hidden>請選擇性別</option>
+                <option value="男">男</option>
+                <option value="女">女</option>
+            </select>
+            <input type="number" name="height" id="height" placeholder="身高(cm)" required>
+            <input type="number" name="weight" id="weight" placeholder="體重(kg)" required>
+            <select name="esrd" id="esrd" required>
+                <option value="" disabled selected hidden>是否有ESRD</option>
+                <option value="是">是</option>
+                <option value="否">否</option>
+            </select>
+            <input type="number" name="pre_op_ef_percentage" id="pre_op_ef_percentage" placeholder="術前EF_Percentage" required>
+            <input type="number" name="post_op_ef_percentage" id="post_op_ef_percentage" placeholder="術後EF_Percentage" required>
+            <button type="submit">儲存</button>
+        </form>
+    </div>
+</body>
+</html>
